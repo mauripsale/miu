@@ -112,10 +112,48 @@ function applyRule4(s) {
     return s;
 }
 
+function adjustCurrentStringFontSize() {
+    if (!currentStringDisplay) return;
+
+    const MAX_ITERATIONS = 30; // Safety break for the loop
+    const MIN_FONT_SIZE_PX = 10; // Minimum font size in pixels
+    const FONT_STEP_DOWN_PX = 1; // Reduce by 1px at a time
+
+    // Reset font size to its original CSS value to get a baseline
+    currentStringDisplay.style.fontSize = ''; // Clear inline style to revert to CSS
+
+    const computedStyle = window.getComputedStyle(currentStringDisplay);
+    const initialFontSizeCSS = computedStyle.fontSize; // e.g., "24px"
+    let currentFontSizePx = parseFloat(initialFontSizeCSS);
+
+    // Ensure the element is not display:none and has dimensions
+    if (currentStringDisplay.offsetHeight === 0 || currentStringDisplay.offsetWidth === 0) {
+        return;
+    }
+
+    let iterations = 0;
+    // Loop to reduce font size if text overflows
+    while (currentStringDisplay.scrollHeight > currentStringDisplay.clientHeight && currentFontSizePx > MIN_FONT_SIZE_PX && iterations < MAX_ITERATIONS) {
+        currentFontSizePx -= FONT_STEP_DOWN_PX;
+        currentStringDisplay.style.fontSize = currentFontSizePx + 'px';
+        iterations++;
+    }
+
+    // If it's still overflowing and we hit min font size, ensure min font size is set
+    if (currentStringDisplay.scrollHeight > currentStringDisplay.clientHeight && currentFontSizePx <= MIN_FONT_SIZE_PX) {
+        currentStringDisplay.style.fontSize = MIN_FONT_SIZE_PX + 'px';
+    }
+    // If we reduced it too much (e.g. it fits but currentFontSizePx < MIN_FONT_SIZE_PX due to loop step)
+    else if (currentFontSizePx < MIN_FONT_SIZE_PX) {
+         currentStringDisplay.style.fontSize = MIN_FONT_SIZE_PX + 'px';
+    }
+}
+
 // Placeholder for function to update the display (will be expanded later)
 function updateDisplay() {
     if (currentStringDisplay) {
         currentStringDisplay.textContent = currentString;
+        adjustCurrentStringFontSize(); // Call the new function here
     }
     if (stringsCountDisplay) {
         stringsCountDisplay.textContent = 'Strings Generated: ' + stringsGeneratedCount;

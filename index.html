@@ -42,6 +42,7 @@
         }
         .current-string {
             font-size: 2.5em;
+            line-height: 1.3; /* Added for predictable height calculation */
             font-weight: bold;
             margin-bottom: 30px;
             text-align: center;
@@ -49,6 +50,8 @@
             padding: 10px;
             background-color: #ecf0f1;
             border-radius: 6px;
+            max-height: 6.5em;  /* Allows approx 2 lines at initial 2.5em font and 1.3 line-height */
+            overflow-y: hidden; /* Prevents scrollbar if content still slightly overflows after JS adjustment */
             overflow-wrap: break-word; /* Added for wrapping long strings */
             word-break: break-all; /* Added for more aggressive breaking if needed */
         }
