@@ -63,44 +63,61 @@
             gap: 10px; /* Add gap between rule buttons */
         }
         /* .rules form styling removed as forms are no longer used for individual rule buttons */
-        .rules button, .reset-button-style { /* Combined styling for rule buttons and the reset button */
+        .rules button, .reset-button-style {
             width: 100%;
             padding: 12px 15px;
-            font-size: 0.95em;
+            font-size: 1em; /* Slightly increased font size */
             color: #fff;
-            background-color: #3498db;
+            /* Using a gradient for background */
+            background-image: linear-gradient(to bottom, #007bff 0%, #0056b3 100%);
+            background-color: #007bff; /* Fallback */
             border: none;
-            border-radius: 5px;
+            border-radius: 8px; /* More rounded corners */
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            /* flex-basis for buttons if they are direct children of .rules flex container */
-            flex-basis: calc(50% - 10px); /* Two buttons per row */
-            margin-bottom: 10px; /* Space between buttons/rows */
+            transition: background-image 0.2s ease, transform 0.1s ease; /* Added transform transition */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Slightly adjusted shadow */
+            flex-basis: calc(50% - 10px);
+            margin-bottom: 10px;
+            font-weight: 500; /* Added font weight */
         }
+
         .rules button:hover, .reset-button-style:hover {
-            background-color: #2980b9;
+            background-image: linear-gradient(to bottom, #0069d9 0%, #004085 100%); /* Darken gradient on hover */
+            background-color: #0069d9;
         }
+
+        .rules button:active, .reset-button-style:active {
+            transform: translateY(1px); /* Pressed effect */
+            background-image: linear-gradient(to bottom, #0056b3 0%, #00376e 100%); /* Even darker for active */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Disabled state needs to contrast with new gradient buttons */
         .rules button:disabled, .reset-button-style:disabled {
-            background-color: #bdc3c7;
-            color: #7f8c8d;
+            background-image: none; /* Remove gradient for disabled */
+            background-color: #adb5bd; /* A clearer disabled grey */
+            color: #6c757d;
             cursor: not-allowed;
             box-shadow: none;
+            transform: translateY(0); /* Ensure no pressed effect on disabled */
         }
+
         .rules button:disabled:hover, .reset-button-style:disabled:hover {
-            background-color: #bdc3c7;
-            color: #7f8c8d;
+            background-image: none;
+            background-color: #adb5bd; /* Keep same on hover for disabled */
+            color: #6c757d;
         }
+
         /* Specific style for reset button if it's not inside .rules or needs override */
+        /* This .reset-button-style is already included in the combined rule above */
+        /* It will inherit all those properties. If it needs to be different, override here. */
+        /* For example, if it shouldn't have flex-basis: */
         .reset-button-style {
-            /* If reset button is outside .rules, it won't get flex-basis from above */
-            /* If it's inside a div that's a flex item, that div might need styling */
-            /* For now, assuming it might need its own width if not in a flex layout like .rules */
-             display: block; /* Or inline-block depending on desired layout */
-             margin-left: auto;
-             margin-right: auto;
-             /* width: auto; /* or a specific width like 200px */
-             /* flex-basis will apply if it's a direct child of a flex container like .rules */
+            /* flex-basis: auto; /* Uncomment if it should not be part of the flex layout in .rules */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            /* width: fit-content; /* Or a specific width */
         }
         .history {
             margin-top: 40px;
@@ -161,14 +178,14 @@
     <div class="container">
         <h1>MIU Game</h1>
         <p class="strings-count" id="stringsCountDisplay"></p>
-        <div class="current-string" id="currentStringDisplay"></div>
         <h2>Apply Rules</h2>
         <div class="rules">
-            <button type="button" id="rule1Button" class="rule-button">Apply Rule 1 (Add U if ends with I)</button>
-            <button type="button" id="rule2Button" class="rule-button">Apply Rule 2 (Mx -> Mxx)</button>
-            <button type="button" id="rule3Button" class="rule-button">Apply Rule 3 (III -> U)</button>
-            <button type="button" id="rule4Button" class="rule-button">Apply Rule 4 (UU -> delete)</button>
+            <button type="button" id="rule1Button" class="rule-button">✨ Apply Rule 1 (Add U if ends with I)</button>
+            <button type="button" id="rule2Button" class="rule-button">🔁 Apply Rule 2 (Mx → Mxx)</button>
+            <button type="button" id="rule3Button" class="rule-button">🔄 Apply Rule 3 (III → U)</button>
+            <button type="button" id="rule4Button" class="rule-button">🗑️ Apply Rule 4 (UU → Delete)</button>
         </div>
+        <div class="current-string" id="currentStringDisplay"></div>
         <div class="history">
             <h3>History</h3>
             <ul id="historyList">
@@ -176,7 +193,7 @@
             </ul>
         </div>
         <div>
-            <button type="button" id="resetButton" class="reset-button-style">Reset Game</button>
+            <button type="button" id="resetButton" class="reset-button-style">↺ Reset Game</button>
         </div>
     </div>
     <script src="script.js" defer></script>
