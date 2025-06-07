@@ -57,11 +57,8 @@
             justify-content: space-around;
             gap: 10px; /* Add gap between rule buttons */
         }
-        .rules form {
-            flex-basis: calc(50% - 10px); /* Two buttons per row, considering gap */
-            margin: 0; /* Remove default form margin */
-        }
-        .rules button, .reset-button button { /* Added .reset-button for consistency */
+        /* .rules form styling removed as forms are no longer used for individual rule buttons */
+        .rules button, .reset-button-style { /* Combined styling for rule buttons and the reset button */
             width: 100%;
             padding: 12px 15px;
             font-size: 0.95em;
@@ -72,19 +69,33 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* flex-basis for buttons if they are direct children of .rules flex container */
+            flex-basis: calc(50% - 10px); /* Two buttons per row */
+            margin-bottom: 10px; /* Space between buttons/rows */
         }
-        .rules button:hover, .reset-button button:hover {
+        .rules button:hover, .reset-button-style:hover {
             background-color: #2980b9;
         }
-        .rules button:disabled, .reset-button button:disabled { /* General disabled state for all buttons */
-            background-color: #bdc3c7; /* Greyed out background */
-            color: #7f8c8d; /* Darker grey text */
-            cursor: not-allowed; /* Show not-allowed cursor */
-            box-shadow: none; /* Remove shadow for disabled state */
+        .rules button:disabled, .reset-button-style:disabled {
+            background-color: #bdc3c7;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            box-shadow: none;
         }
-        .rules button:disabled:hover, .reset-button button:disabled:hover {
-            background-color: #bdc3c7; /* Keep background same on hover for disabled */
-            color: #7f8c8d; /* Keep text color same on hover for disabled */
+        .rules button:disabled:hover, .reset-button-style:disabled:hover {
+            background-color: #bdc3c7;
+            color: #7f8c8d;
+        }
+        /* Specific style for reset button if it's not inside .rules or needs override */
+        .reset-button-style {
+            /* If reset button is outside .rules, it won't get flex-basis from above */
+            /* If it's inside a div that's a flex item, that div might need styling */
+            /* For now, assuming it might need its own width if not in a flex layout like .rules */
+             display: block; /* Or inline-block depending on desired layout */
+             margin-left: auto;
+             margin-right: auto;
+             /* width: auto; /* or a specific width like 200px */
+             /* flex-basis will apply if it's a direct child of a flex container like .rules */
         }
         .history {
             margin-top: 40px;
@@ -115,19 +126,18 @@
             font-size: 0.95em;
             color: #495057;
         }
-        .reset-button { /* Class for the reset button's form for styling */
-            text-align: center;
-            margin-top: 30px;
-        }
+        /* .reset-button class was for a form, now .reset-button-style is on the button itself */
+        /* text-align: center; on the parent div of reset button can center it if it's block/inline-block */
+        /* margin-top: 30px; can be applied to the button or its container div */
 
         /* Basic responsiveness */
         @media (max-width: 600px) {
             .rules {
                 flex-direction: column; /* Stack buttons vertically */
             }
-            .rules form {
+            .rules button { /* Target buttons directly if they are flex items */
                 flex-basis: 100%; /* Full width for stacked buttons */
-                margin-bottom: 10px; /* Add some space between stacked buttons */
+                /* margin-bottom is already applied from the general .rules button style */
             }
             .container {
                 margin: 20px 15px;
@@ -145,38 +155,25 @@
 <body>
     <div class="container">
         <h1>MIU Game</h1>
-        <p class="strings-count">Strings Generated: {{ strings_generated_count }}</p>
-        <div class="current-string">
-            {{ current_string }}
-        </div>
+        <p class="strings-count" id="stringsCountDisplay"></p>
+        <div class="current-string" id="currentStringDisplay"></div>
         <h2>Apply Rules</h2>
         <div class="rules">
-            <form action="{{ url_for('apply_rule_route', rule_num=1) }}" method="post">
-                <button type="submit" {% if not applicable_rules.rule1 %}disabled{% endif %}>Apply Rule 1 (Add U if ends with I)</button>
-            </form>
-            <form action="{{ url_for('apply_rule_route', rule_num=2) }}" method="post">
-                <button type="submit" {% if not applicable_rules.rule2 %}disabled{% endif %}>Apply Rule 2 (Mx -> Mxx)</button>
-            </form>
-            <form action="{{ url_for('apply_rule_route', rule_num=3) }}" method="post">
-                <button type="submit" {% if not applicable_rules.rule3 %}disabled{% endif %}>Apply Rule 3 (III -> U)</button>
-            </form>
-            <form action="{{ url_for('apply_rule_route', rule_num=4) }}" method="post">
-                <button type="submit" {% if not applicable_rules.rule4 %}disabled{% endif %}>Apply Rule 4 (UU -> delete)</button>
-            </form>
+            <button type="button" id="rule1Button" class="rule-button">Apply Rule 1 (Add U if ends with I)</button>
+            <button type="button" id="rule2Button" class="rule-button">Apply Rule 2 (Mx -> Mxx)</button>
+            <button type="button" id="rule3Button" class="rule-button">Apply Rule 3 (III -> U)</button>
+            <button type="button" id="rule4Button" class="rule-button">Apply Rule 4 (UU -> delete)</button>
         </div>
         <div class="history">
             <h3>History</h3>
-            <ul>
-                {% for item in history %}
-                    <li>{{ item }}</li>
-                {% endfor %}
+            <ul id="historyList">
+                <!-- History items will be populated by JavaScript -->
             </ul>
         </div>
         <div>
-            <form action="{{ url_for('reset_game') }}" method="post" class="reset-button">
-                <button type="submit">Reset Game</button>
-            </form>
+            <button type="button" id="resetButton" class="reset-button-style">Reset Game</button>
         </div>
     </div>
+    <script src="script.js" defer></script>
 </body>
 </html>
