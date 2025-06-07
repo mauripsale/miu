@@ -24,7 +24,19 @@ def index():
     if 'current_string' not in session:
         session['current_string'] = 'MI'
         session['history'] = ['MI']
-    return render_template('index.html', current_string=session['current_string'], history=session['history'])
+
+    current_string = session['current_string'] # Use the session's current string
+
+    applicable_rules = {
+        'rule1': current_string.endswith('I'),
+        'rule2': current_string.startswith('M'),
+        'rule3': 'III' in current_string,
+        'rule4': 'UU' in current_string
+    }
+
+    strings_generated_count = len(session['history'])
+
+    return render_template('index.html', current_string=current_string, history=session['history'], applicable_rules=applicable_rules, strings_generated_count=strings_generated_count)
 
 @app.route('/apply_rule/<int:rule_num>', methods=['POST'])
 def apply_rule_route(rule_num):
